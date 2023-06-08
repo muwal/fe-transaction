@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom'
 
 export default function CreateTransaction() {
     const navigate = useNavigate();
+    const bareUrl = 'http://localhost:8000/api/';
 
     const [transaction, setTransaction] = useState(
         {
@@ -27,7 +28,7 @@ export default function CreateTransaction() {
     }, [])
 
     const fetchProducts = async () => {
-        await axios.get(`http://localhost:8000/api/product`).then(({ data }) => {
+        await axios.get(bareUrl + `product`).then(({ data }) => {
             setProducts(data.data)
         })
     }
@@ -62,7 +63,7 @@ export default function CreateTransaction() {
 
     const handleSave = () => {
         setIsSaving(true);
-        axios.post(`http://localhost:8000/api/transaction`, transaction).then(response => {
+        axios.post(bareUrl + `transaction`, transaction).then(response => {
             setIsSaving(false)
             setItemProduct([])
             setQtyValue('')

@@ -7,13 +7,14 @@ import moment from 'moment';
 
 export default function List() {
     const [transactions, setTransactions] = useState([])
+    const bareUrl = 'http://localhost:8000/api/';
 
     useEffect(() => {
         fetchTransaction()
     }, [])
 
     const fetchTransaction = async () => {
-        await axios.get(`http://localhost:8000/api/transaction`).then(({ data }) => {
+        await axios.get(bareUrl + `transaction`).then(({ data }) => {
             setTransactions(data.data)
         })
     }
@@ -39,7 +40,7 @@ export default function List() {
             return;
         }
 
-        await axios.delete(`http://localhost:8000/api/transaction/${id}`).then(({ data }) => {
+        await axios.delete(bareUrl + `transaction/${id}`).then(({ data }) => {
             Swal.fire({
                 icon: "success",
                 text: data.message
