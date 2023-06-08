@@ -23,7 +23,7 @@ function App() {
             <Row>
                 <Col md={12}>
                     <Routes>
-                        <Route path="/create" element={<CreateTransaction />} />
+                        <Route path="/transaction/create" element={<CreateTransaction />} />
                         <Route exact path='/' element={<TransactionList />} />
                     </Routes>
                 </Col>

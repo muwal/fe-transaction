@@ -57,7 +57,7 @@ export default function List() {
         <div className='container'>
             <div className="row">
                 <div className='col-12'>
-                    <Link className='btn btn-primary mb-3 float-end' to={"/create"}>
+                    <Link className='btn btn-primary mb-3 float-end' to={"/transaction/create"}>
                         Create Transaction
                     </Link>
                 </div>
@@ -81,13 +81,13 @@ export default function List() {
                                         transactions.length > 0 && (
                                             transactions.map((row, key) => (
                                                 <tr key={key}>
-                                                    <td>{key + 1}</td>
-                                                    <td>{row.product}</td>
-                                                    <td>{row.stock}</td>
-                                                    <td>{row.qty}</td>
-                                                    <td>{displayDate(row.created_at)}</td>
-                                                    <td>{row.types}</td>
-                                                    <td>
+                                                    <td className='align-middle'>{key + 1}</td>
+                                                    <td className='align-middle'>{row.product}</td>
+                                                    <td className='align-middle'>{row.stock}</td>
+                                                    <td className='align-middle'>{row.qty}</td>
+                                                    <td className='align-middle'>{displayDate(row.created_at)}</td>
+                                                    <td className='align-middle'>{row.types}</td>
+                                                    <td className='align-middle'>
                                                         <Button variant="danger" onClick={() => deleteTransaction(row.id)}>
                                                             Hapus
                                                         </Button>

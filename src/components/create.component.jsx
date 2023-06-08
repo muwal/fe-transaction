@@ -10,8 +10,17 @@ import { useNavigate } from 'react-router-dom'
 export default function CreateTransaction() {
     const navigate = useNavigate();
 
+    const [transaction, setTransaction] = useState(
+        {
+            id_products: '',
+            'qty': ''
+        }
+    );
     const [products, setProducts] = useState([]);
-    const [itemProduct, setItemProduct] = useState();
+    const [itemProduct, setItemProduct] = useState([]);
+    const [qtyValue, setQtyValue] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
+    const [warningText, setWarningText] = useState('');
 
     useEffect(() => {
         fetchProducts()
@@ -23,16 +32,47 @@ export default function CreateTransaction() {
         })
     }
 
-    function handleItemChange(item) {
-        setItemProduct(item);
-        console.log(item)
-        products.filter(data => {
-            if (data.id === item) {
-                console.log(true)
-            } else {
-                console.log(false)
-            }
+    const handleItemChange = (item) => {
+
+        var product = products.find((product) => {
+            return product.id == item
         })
+
+        setItemProduct(product);
+        setTransaction({
+            ...transaction,
+            id_products: product.id,
+        })
+    }
+
+    const handleQtyChange = (e) => {
+        if (e.target.value > itemProduct.stock) {
+            setIsSaving(false)
+            setQtyValue(e.target.value);
+            setWarningText('Quantity can`t be higher than stock')
+        } else {
+            setQtyValue(e.target.value);
+            setWarningText('')
+        }
+        setTransaction({
+            ...transaction,
+            qty: e.target.value,
+        })
+    }
+
+    const handleSave = () => {
+        setIsSaving(true);
+        axios.post(`http://localhost:8000/api/transaction`, transaction).then(response => {
+            setIsSaving(false)
+            setItemProduct([])
+            setQtyValue('')
+            setWarningText('')
+            setProducts([])
+            navigate('/')
+        }).catch(error => {
+            setIsSaving(false)
+            console.log(error)
+        });
     }
 
     return (
@@ -44,13 +84,14 @@ export default function CreateTransaction() {
                             <h4 className="card-title">New Transaction</h4>
                             <hr />
                             <div className="form-wrapper">
-                                <Form >
+                                <Form>
                                     <Row>
                                         <Col>
                                             <Form.Group controlId="Product">
                                                 <Form.Label>Product</Form.Label>
-                                                <Form.Select aria-label="Product" name="product" value={itemProduct}
-                                                    onChange={(e) => { console.log("id_product:", e.target.value); handleItemChange(e.target.value) }}>
+                                                <Form.Select aria-label="Product" name="product"
+                                                    onChange={(e) => { handleItemChange(e.target.value) }}>
+                                                    <option disabled>Open this select menu</option>
                                                     {
                                                         products.length > 0 && (
                                                             products.map((row, key) => (
@@ -66,7 +107,7 @@ export default function CreateTransaction() {
                                         <Col>
                                             <Form.Group controlId="Stock">
                                                 <Form.Label>Stock</Form.Label>
-                                                <Form.Control type="text" disabled />
+                                                <Form.Control type="text" defaultValue={itemProduct.stock} readOnly disabled area-aria-label="Stock" />
                                             </Form.Group>
                                         </Col>
                                     </Row>
@@ -74,7 +115,7 @@ export default function CreateTransaction() {
                                         <Col>
                                             <Form.Group controlId="Types">
                                                 <Form.Label>Types</Form.Label>
-
+                                                <Form.Control type="text" defaultValue={itemProduct.types} readOnly disabled area-aria-label="Types" />
                                             </Form.Group>
                                         </Col>
                                     </Row>
@@ -82,12 +123,15 @@ export default function CreateTransaction() {
                                         <Col>
                                             <Form.Group controlId="Quantity">
                                                 <Form.Label>Quantity</Form.Label>
-
+                                                <Form.Control type="number" area-aria-label="Stock" value={qtyValue} onChange={handleQtyChange} min={0} />
+                                                <label type="invalid" className="text-danger mt-2">
+                                                    {warningText}
+                                                </label>
                                             </Form.Group>
                                         </Col>
                                     </Row>
-                                    <Button variant="primary" className="mt-2 float-end" size="md" block="block" type="submit">
-                                        Create
+                                    <Button variant="primary" className="mt-2 float-end" size="md" block="block" type="submit" disabled={!qtyValue || qtyValue > itemProduct.stock || isSaving} onClick={handleSave}>
+                                        {isSaving ? 'Saving...' : 'Create'}
                                     </Button>
                                 </Form>
                             </div>
@@ -95,6 +139,6 @@ export default function CreateTransaction() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
