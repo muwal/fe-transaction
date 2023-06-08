@@ -49,7 +49,7 @@ export default function CreateTransaction() {
         if (e.target.value > itemProduct.stock) {
             setIsSaving(false)
             setQtyValue(e.target.value);
-            setWarningText('Quantity can`t be higher than stock')
+            setWarningText(<span className="text-danger">Quantity can't be higher than stock</span>)
         } else {
             setQtyValue(e.target.value);
             setWarningText('')
@@ -123,10 +123,8 @@ export default function CreateTransaction() {
                                         <Col>
                                             <Form.Group controlId="Quantity">
                                                 <Form.Label>Quantity</Form.Label>
-                                                <Form.Control type="number" area-aria-label="Stock" value={qtyValue} onChange={handleQtyChange} min={0} />
-                                                <label type="invalid" className="text-danger mt-2">
-                                                    {warningText}
-                                                </label>
+                                                <Form.Control type="number" area-aria-label="Stock" className="mb-2" value={qtyValue} onChange={handleQtyChange} min={0} />
+                                                {warningText}
                                             </Form.Group>
                                         </Col>
                                     </Row>
