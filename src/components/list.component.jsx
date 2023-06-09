@@ -4,10 +4,43 @@ import Button from 'react-bootstrap/Button'
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import moment from 'moment';
+import { Form } from 'react-bootstrap';
 
 export default function List() {
-    const [transactions, setTransactions] = useState([])
     const bareUrl = 'http://localhost:8000/api/';
+    const [transactions, setTransactions] = useState([])
+    const [sortOrder, setSortOrder] = useState("newest");
+
+    const sortData = (sortOrder) => {
+        switch (sortOrder) {
+            case "newest":
+                setTransactions(transactions.sort((a, b) => (a.id < b.id ? 1 : -1)));
+                break;
+            case "oldest":
+                setTransactions(transactions.sort((a, b) => (a.id > b.id ? 1 : -1)));
+                break;
+            case "asc":
+                setTransactions(transactions.sort((a, b) => (a.product.toLowerCase() > b.product.toLowerCase() ? 1 : -1)));
+                break;
+            case "desc":
+                setTransactions(transactions.sort((a, b) => (a.product.toLowerCase() < b.product.toLowerCase() ? 1 : -1)));
+                break;
+            case "asc_qty":
+                setTransactions(transactions.sort((a, b) => (a.qty > b.qty ? 1 : -1)));
+                break;
+            case "desc_qty":
+                setTransactions(transactions.sort((a, b) => (a.qty < b.qty ? 1 : -1)));
+                break;
+            default:
+                setTransactions(transactions.sort((a, b) => (a.id < b.id ? 1 : -1)));
+                break;
+        }
+    };
+
+    const handleSortOrderChange = (value) => {
+        setSortOrder(value);
+        sortData(value);
+    };
 
     useEffect(() => {
         fetchTransaction()
@@ -57,7 +90,18 @@ export default function List() {
     return (
         <div className='container'>
             <div className="row">
-                <div className='col-12'>
+                <div className='col-3'>
+                    <Form.Select aria-label="sortOrder" name="sortOrder"
+                        onChange={(e) => { handleSortOrderChange(e.target.value) }}>
+                        <option value={'newest'}>Terbaru</option>
+                        <option value={'oldest'}>Terlama</option>
+                        <option value={'asc'}>A-Z</option>
+                        <option value={'desc'}>Z-A</option>
+                        <option value={'asc_qty'}>Transaksi terendah</option>
+                        <option value={'desc_qty'}>Transaksi terbanyak</option>
+                    </Form.Select>
+                </div>
+                <div className='col-9 justify-content-end'>
                     <Link className='btn btn-primary mb-3 float-end' to={"/transaction/create"}>
                         Create Transaction
                     </Link>

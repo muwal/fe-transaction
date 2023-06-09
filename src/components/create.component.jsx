@@ -8,8 +8,8 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom'
 
 export default function CreateTransaction() {
-    const navigate = useNavigate();
     const bareUrl = 'http://localhost:8000/api/';
+    const navigate = useNavigate();
 
     const [transaction, setTransaction] = useState(
         {
