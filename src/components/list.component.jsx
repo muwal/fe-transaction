@@ -10,6 +10,8 @@ export default function List() {
     const bareUrl = 'http://localhost:8000/api/';
     const [transactions, setTransactions] = useState([])
     const [sortOrder, setSortOrder] = useState("newest");
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
 
     const sortData = (sortOrder) => {
         switch (sortOrder) {
@@ -52,6 +54,18 @@ export default function List() {
         })
     }
 
+    const handleSearch = async () => {
+        if (searchTerm == '') {
+            await axios.get(bareUrl + `transaction`).then(({ data }) => {
+                setTransactions(data.data)
+            })
+        } else {
+            await axios.get(bareUrl + `transaction/search/${searchTerm}`).then(({ data }) => {
+                setTransactions(data.data)
+            })
+        }
+    }
+
     const displayDate = (date) => {
         return moment(date).format('DD MMMM YYYY')
     }
@@ -89,7 +103,15 @@ export default function List() {
 
     return (
         <div className='container'>
-            <div className="row">
+            <div className="row mb-3">
+                <div className='col-3'>
+                    <Form.Control type="text" area-aria-label="Search" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                </div>
+                <div className='col-2 p-0' style={{ width: '8.666667%' }}>
+                    <Button variant="primary" onClick={handleSearch}>
+                        Search
+                    </Button>
+                </div>
                 <div className='col-3'>
                     <Form.Select aria-label="sortOrder" name="sortOrder"
                         onChange={(e) => { handleSortOrderChange(e.target.value) }}>
@@ -101,11 +123,13 @@ export default function List() {
                         <option value={'desc_qty'}>Transaksi terbanyak</option>
                     </Form.Select>
                 </div>
-                <div className='col-9 justify-content-end'>
-                    <Link className='btn btn-primary mb-3 float-end' to={"/transaction/create"}>
+                <div className='col-4 justify-content-end' style={{ width: '41.333333%' }}>
+                    <Link className='btn btn-primary float-end' to={"/transaction/create"}>
                         Create Transaction
                     </Link>
                 </div>
+            </div>
+            <div className='row'>
                 <div className="col-12">
                     <div className="card card-body">
                         <div className="table-responsive">
