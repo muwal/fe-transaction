@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 import TransactionList from "./components/list.component";
 import CreateTransaction from './components/create.component';
+import EditTransaction from './components/edit.component';
 
 function App() {
     return (<Router>
@@ -24,6 +25,7 @@ function App() {
                 <Col md={12}>
                     <Routes>
                         <Route path="/transaction/create" element={<CreateTransaction />} />
+                        <Route path="/transaction/:id/edit" element={<EditTransaction />} />
                         <Route exact path='/' element={<TransactionList />} />
                     </Routes>
                 </Col>

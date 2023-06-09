@@ -105,7 +105,7 @@ export default function List() {
         <div className='container'>
             <div className="row mb-3">
                 <div className='col-3'>
-                    <Form.Control type="text" area-aria-label="Search" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                    <Form.Control type="text" area-aria-label="Search" placeholder='Search here...' value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                 </div>
                 <div className='col-2 p-0' style={{ width: '8.666667%' }}>
                     <Button variant="primary" onClick={handleSearch}>
@@ -157,6 +157,9 @@ export default function List() {
                                                     <td className='align-middle'>{displayDate(row.created_at)}</td>
                                                     <td className='align-middle'>{row.types}</td>
                                                     <td className='align-middle'>
+                                                        <Link to={`/transaction/${row.id}/edit`} className='btn btn-success me-2'>
+                                                            Edit
+                                                        </Link>
                                                         <Button variant="danger" onClick={() => deleteTransaction(row.id)}>
                                                             Hapus
                                                         </Button>
